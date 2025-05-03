@@ -34,15 +34,6 @@ public class ProductoDataProvider {
         );
     }
 
-    // Proveer lista de productos por nombre tipo Object
-    public static List<Object[]> getProductosPorNombreObject() {
-        return List.of(
-            new Object[]{1, "lubristone", "litro"},
-            new Object[]{2, "liquido frenos", "unidad"},
-            new Object[]{3, "grasa roja", "unidad"}
-        );
-    }
-
     // Proveer producto individual para buscarPorId, actualizar y eliminar
     public static Optional<Producto> getProductoPorId() {
         Producto producto = new Producto(1,"mobil 4t", "litro", 10, 3000, 4000);

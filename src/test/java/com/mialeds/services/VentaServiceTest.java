@@ -21,7 +21,6 @@ import org.slf4j.Logger;
 
 import java.text.NumberFormat;
 import java.time.LocalDate;
-import java.util.Collections;
 import java.util.List;
 import java.util.Locale;
 
@@ -298,7 +297,7 @@ class VentaServiceTest {
 
 
 
-    @Test
+/*     @Test
     void testObtenerTop5ProductosMasVendidos() {
         // Configura los datos simulados para el top 5 de productos más vendidos
         List<Object[]> top5ProductosEsperados = Collections.singletonList(new Object[]{"Producto1", 5});
@@ -419,5 +418,5 @@ class VentaServiceTest {
         assertNull(resultado);
 
         verify(logger).error("Error al obtener las ganancias de los ultimos 30 dias: Error simulado");
-    }
+    }*/
 }

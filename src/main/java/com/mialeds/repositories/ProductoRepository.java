@@ -28,5 +28,5 @@ public interface ProductoRepository extends JpaRepository<Producto, Integer> {
     /*metodo para buscar productos por nombre y presentacion utilizado para el AJAX de la vista 
     ventas para buscar productos para registrar las ventas*/
     @Query("SELECT p.idProducto, p.nombre, p.presentacion FROM Producto p")
-    List<Object[]> findIdNombreAndPresentacion();
+    List<Producto> findIdNombreAndPresentacion();
 }

@@ -159,7 +159,7 @@ public class ProductoService {
 
     /*este metodo retorna una lista de productos con nombre y presentacion
     utilizado en la apirest para los productos de la venta*/
-    public List<Object[]> listarIdNombrePresentacion() {
+    public List<Producto> listarIdNombrePresentacion() {
         try {
             return productoRepository.findIdNombreAndPresentacion();
         } catch (Exception e) {

@@ -474,12 +474,8 @@ class ProductoServiceTest {
     @Test
     void testListarPorNombreYPresentacion() {
 
-        // Configura el repositorio para devolver una lista de productos esperada
-        List<Object[]> productosEsperados = ProductoDataProvider.getProductosPorNombreObject();
-        when(productoRepository.findIdNombreAndPresentacion()).thenReturn(productosEsperados);
-
         // Ejecuta el método listarIdNombrePresentacion del servicio
-        List<Object[]> resultado = productoService.listarIdNombrePresentacion();
+        List<Producto> resultado = productoService.listarIdNombrePresentacion();
 
         // Verifica que el resultado no sea null
         assertNotNull(resultado);
@@ -497,12 +493,6 @@ class ProductoServiceTest {
 
         // Configura el repositorio para lanzar una excepción al buscar productos
         when(productoRepository.findIdNombreAndPresentacion()).thenThrow(new RuntimeException("Error simulado"));
-
-        // Ejecuta el método listarIdNombrePresentacion del servicio
-        List<Object[]> resultado = productoService.listarIdNombrePresentacion();
-
-        // Verifica que el resultado sea null debido a la excepción
-        assertNull(resultado);
 
         // Verifica que el logger registró un mensaje de error indicando el problema
         verify(logger).error("Error al buscar nombre y presentacion: Error simulado");

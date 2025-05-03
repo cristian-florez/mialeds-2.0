@@ -238,7 +238,7 @@ public class VentaService {
     }
 
     //metodo que obtiene los 5 productos mas vendidos
-    public List<Object[]> obtenerTop5ProductosMasVendidos() {
+    public List<Venta> obtenerTop5ProductosMasVendidos() {
         try {
             LocalDate fechaInicio = LocalDate.now().minusMonths(1);
             return ventaRepository.findTop5ProductosMasVendidos(fechaInicio);
@@ -249,7 +249,7 @@ public class VentaService {
     }
 
     //metodo que obtiene los 5 productos menos vendidos
-    public List<Object[]> obtenerTop5ProductosMenosVendidos() {
+    public List<Venta> obtenerTop5ProductosMenosVendidos() {
         try {
             LocalDate fechaInicio = LocalDate.now().minusMonths(1);
             return ventaRepository.findTop5ProductosMenosVendidos(fechaInicio);
@@ -260,7 +260,7 @@ public class VentaService {
     }
 
     //metodo que obtiene las ventas por dia de los ultimos 30 dias
-    public List<Object[]> obtenerVentasUltimoMes() {
+    public List<Venta> obtenerVentasUltimoMes() {
         try {
             LocalDate fechaInicio = LocalDate.now().minusMonths(1);
             return ventaRepository.findVentasPorDiaUltimos30Dias(fechaInicio);
@@ -271,7 +271,7 @@ public class VentaService {
     }
 
     //metodo que obtiene las ganancias por dia de los ultimos 30 dias
-    public List<Object[]> obtenerGananciasUltimoMes() {
+    public List<Venta> obtenerGananciasUltimoMes() {
         try {
             LocalDate fechaInicio = LocalDate.now().minusMonths(1);
             return ventaRepository.findGananciasPorDiaUltimos30Dias(fechaInicio);
