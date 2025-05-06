@@ -1,4 +1,4 @@
-package com.mialeds.models;
+package com.mialeds.models.DTO;
 
 public class EmailDTO {
 

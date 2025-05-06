@@ -1,7 +1,7 @@
 services:
   mysql:
     image: mysql:8.0
-    container_name: mysql-mialeds
+    container_name: mysql-mialeds_2.0
     ports:
       - "3310:3306"
     environment:
@@ -14,7 +14,7 @@ services:
 
   app:
     build: .
-    container_name: mialeds-app
+    container_name: mialeds-app_2.0
     ports:
       - "8080:8080"
     depends_on:
@@ -28,7 +28,7 @@ services:
 
   phpmyadmin:
     image: phpmyadmin/phpmyadmin
-    container_name: mialeds-phpmyadmin
+    container_name: mialeds-phpmyadmin_2.0.
     restart: always
     ports:
       - "8081:80"

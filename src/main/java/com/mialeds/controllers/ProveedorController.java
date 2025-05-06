@@ -1,15 +1,8 @@
 package com.mialeds.controllers;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
 
 import com.mialeds.models.Proveedor;
 import com.mialeds.models.ProveedorProducto;
@@ -21,86 +14,93 @@ import java.util.Map;
 
 @RestController
 @RequestMapping("/proveedor")
-public class ProveedorController{
+public class ProveedorController {
 
-    // Inyección de dependencias
     @Autowired
     private ProveedorService proveedorService;
 
     @Autowired
     private ProveedorProductoService proveedorProductoService;
 
-
     @GetMapping("/listar")
-    public List<Proveedor> listarproveedores() {
-        return proveedorService.listar();
+    public ResponseEntity<List<Proveedor>> listarProveedores() {
+        List<Proveedor> proveedores = proveedorService.listar();
+        return ResponseEntity.ok(proveedores);
     }
 
-    //agrupamos los precios de los productos por proveedores para mostrar en la tabla
-    @GetMapping("agrupar-productos")
-    public Map<String, List<ProveedorProducto>> listarproductos() {
-        return proveedorProductoService.obtenerProductosAgrupados();
+    @GetMapping("/agrupar-productos")
+    public ResponseEntity<Map<String, List<ProveedorProducto>>> listarProductos() {
+        Map<String, List<ProveedorProducto>> productos = proveedorProductoService.obtenerProductosAgrupados();
+        return ResponseEntity.ok(productos);
     }
 
-    //metodo que me mostrara todos los precios que me ofrecen los proveedores por el producto seleccionado
     @GetMapping("/buscar")
-    public Map<String, List<ProveedorProducto>> buscarProducto(@RequestParam("producto") String nombre) {
-        return proveedorProductoService.listarPornombre(nombre);
+    public ResponseEntity<Map<String, List<ProveedorProducto>>> buscarProducto(@RequestParam("producto") String nombre) {
+        Map<String, List<ProveedorProducto>> resultado = proveedorProductoService.listarPornombre(nombre);
+        return ResponseEntity.ok(resultado);
     }
 
-    // Método para editar un producto
     @PutMapping("/editar/{id}")
-    public Map<String, String> editarProveedor(
+    public ResponseEntity<Map<String, String>> editarProveedor(
             @PathVariable("id") int id,
             @RequestBody Map<String, Object> data) {
 
-        proveedorService.actualizar
-        (id,
-        data.get("editar_nombre_proveedor").toString(),
-        data.get("editar_nit_proveedor").toString(),
-        data.get("editar_correo_proveedor").toString(),
-        data.get("editar_telefono_proveedor").toString());
-
-        return Map.of("mensaje", "Proveedor editado correctamente");
-
-    }
-
-    // Método para crear un nuevo proveedor
-    @PostMapping("/nuevo")
-    public Map<String, String> crearProveedor(@RequestBody Map<String, String> data) {
-        proveedorService.crear(
+        proveedorService.actualizar(
+            id,
             data.get("editar_nombre_proveedor").toString(),
             data.get("editar_nit_proveedor").toString(),
             data.get("editar_correo_proveedor").toString(),
             data.get("editar_telefono_proveedor").toString());
 
-            return Map.of("mensaje", "Error al crear el proveedor ");
-
-        }
-
-
-    @DeleteMapping("/eliminar/{id}")
-    public Map<String, String> eliminarProveedor(@PathVariable("id") int id) {
-        proveedorService.eliminar(id);
-        return Map.of("mensaje", "Error al eliminar el proveedor");
+        return ResponseEntity.ok(Map.of("mensaje", "Proveedor editado correctamente"));
     }
 
-    // Método para asignar precio de venta de proveedores a cierto producto
+    @PostMapping("/nuevo")
+    public ResponseEntity<Map<String, String>> crearProveedor(@RequestBody Map<String, String> data) {
+        try {
+            proveedorService.crear(
+                data.get("editar_nombre_proveedor"),
+                data.get("editar_nit_proveedor"),
+                data.get("editar_correo_proveedor"),
+                data.get("editar_telefono_proveedor"));
+
+            return ResponseEntity.ok(Map.of("mensaje", "Proveedor creado correctamente"));
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body(Map.of("mensaje", "Error al crear el proveedor"));
+        }
+    }
+
+    @DeleteMapping("/eliminar/{id}")
+    public ResponseEntity<Map<String, String>> eliminarProveedor(@PathVariable("id") int id) {
+        try {
+            proveedorService.eliminar(id);
+            return ResponseEntity.ok(Map.of("mensaje", "Proveedor eliminado correctamente"));
+        } catch (Exception e) {
+            return ResponseEntity.status(500).body(Map.of("mensaje", "Error al eliminar el proveedor"));
+        }
+    }
+
     @PutMapping("/asignarPrecio")
-    public Map<String, String> asignarPrecio(@RequestBody Map<String, String> data){
-            //validamos que el id del proveedor y del producto si existan
-            if(Integer.parseInt(data.get("id_proveedor_precio").toString()) == 0 || Integer.parseInt(data.get("id_producto_precio").toString()) == 0){
-                return Map.of("mensaje", "Error: producto o proveedor no encontrado");
+    public ResponseEntity<Map<String, String>> asignarPrecio(@RequestBody Map<String, String> data) {
+        try {
+            int idProveedor = Integer.parseInt(data.get("id_proveedor_precio"));
+            int idProducto = Integer.parseInt(data.get("id_producto_precio"));
+            int precio = Integer.parseInt(data.get("precio_precio"));
+
+            if (idProveedor == 0 || idProducto == 0) {
+                return ResponseEntity.badRequest().body(Map.of("mensaje", "Error: producto o proveedor no encontrado"));
             }
-            //buscamos el producto por id y el proveedor por id y asignamos el precio
-            boolean respuesta = proveedorProductoService.asignarPrecio(
-                Integer.parseInt(data.get("id_proveedor_precio").toString()),
-                Integer.parseInt(data.get("id_producto_precio").toString()),
-                Integer.parseInt(data.get("precio_precio").toString()));
+
+            boolean respuesta = proveedorProductoService.asignarPrecio(idProveedor, idProducto, precio);
+
             if (respuesta) {
-                return Map.of("mensaje", "Precio asignado correctamente");
+                return ResponseEntity.ok(Map.of("mensaje", "Precio asignado correctamente"));
             } else {
-                return Map.of("mensaje","Error al asignar el precio: producto no encontrado");
+                return ResponseEntity.badRequest().body(Map.of("mensaje", "Error al asignar el precio: producto no encontrado"));
             }
+
+        } catch (NumberFormatException e) {
+            return ResponseEntity.badRequest().body(Map.of("mensaje", "Datos inválidos"));
+        }
     }
 }
