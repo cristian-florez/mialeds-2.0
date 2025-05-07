@@ -1,5 +1,6 @@
 package com.mialeds.security;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -12,6 +13,7 @@ import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 import com.mialeds.services.UserDetailsServiceImpl;
 
@@ -19,6 +21,9 @@ import com.mialeds.services.UserDetailsServiceImpl;
 @Configuration
 @EnableWebSecurity // Esta anotación habilita la seguridad web en nuestra aplicación
 public class SecurityConfig {
+
+    @Autowired
+    private JwtAuthenticationFilter jwtAuthenticationFilter;
 
     // Método que configura la cadena de filtros de seguridad
     @Bean
@@ -41,6 +46,7 @@ public class SecurityConfig {
                 http.requestMatchers("/crearUsuario").permitAll();
                 http.anyRequest().authenticated();
             })
+            .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class)
             .build();
     }
 

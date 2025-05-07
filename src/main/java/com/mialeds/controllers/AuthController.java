@@ -9,6 +9,7 @@ import org.springframework.security.core.AuthenticationException;
 import org.springframework.web.bind.annotation.*;
 
 import com.mialeds.models.DTO.LoginDTO;
+import com.mialeds.security.JwtUtil;
 
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -20,14 +21,19 @@ public class AuthController {
     @Autowired
     private AuthenticationManager authenticationManager;
 
+    @Autowired
+    private JwtUtil jwtUtil;
+
     @PostMapping("/login")
-    public ResponseEntity<String> login(@RequestBody LoginDTO loginDTO) {
+    public ResponseEntity<?> login(@RequestBody LoginDTO loginDTO) {
         try {
             authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(loginDTO.getCedula(), loginDTO.getContraseña())
             );
 
-            return ResponseEntity.ok("Inicio de sesión exitoso");
+            String token = jwtUtil.generarToken(loginDTO.getCedula());
+
+            return ResponseEntity.ok().body(token);
 
         } catch (AuthenticationException e) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Credenciales inválidas");
