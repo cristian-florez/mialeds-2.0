@@ -3,6 +3,7 @@ package com.mialeds.controllers;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -59,7 +60,26 @@ public class UsuarioController {
         return ResponseEntity.ok(Map.of("mensaje", "Usuario editado correctamente"));
     }
 
-    @PutMapping("/cambiarClave/{id}")
+    // Método para enviar un correo electrónico de recuperación
+    @PostMapping("/restaurar-clave")
+    public ResponseEntity<Map<String, String>> restaurarClave(@RequestBody Map<String, String> data) {
+        boolean respuesta = emailService.enviarCorreo(
+            data.get("cedula_olvide_clave").toString(),
+            data.get("correo_olvide_clave").toString()
+        );
+
+        if (respuesta) {
+            return ResponseEntity.ok(
+                Map.of("mensaje", "Correo de recuperación enviado con éxito. Por favor revise su correo electrónico.")
+            );
+        } else {
+            return ResponseEntity
+                .status(HttpStatus.UNAUTHORIZED)
+                .body(Map.of("mensaje", "Error en las credenciales."));
+        }
+    }
+
+    @PutMapping("/cambiar-clave/{id}")
     public ResponseEntity<Map<String, String>> cambiarClave(
         @PathVariable("id") int id,
         @RequestBody Map<String, Object> data) {

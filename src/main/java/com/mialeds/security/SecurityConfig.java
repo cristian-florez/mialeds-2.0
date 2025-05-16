@@ -42,8 +42,21 @@ public class SecurityConfig {
                 session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
             // Configuración de rutas permitidas
             .authorizeHttpRequests(http -> {
-                http.requestMatchers("/login").permitAll();
-                http.requestMatchers("/crearUsuario").permitAll();
+                    // Definimos qué solicitudes HTTP son públicas y cuáles requieren autenticación
+                    http.requestMatchers("/login").permitAll(); 
+                    http.requestMatchers("/usuario/nuevo").permitAll();
+                    http.requestMatchers("/usuario/restaurar-clave").permitAll();
+                    
+                    // Aquí definimos las rutas que requieren autenticación
+                    http.requestMatchers("/usuario/editar").hasRole("ADMIN");
+                    http.requestMatchers("/producto/nuevo").hasRole("ADMIN");
+                    http.requestMatchers("/producto/editar").hasRole("ADMIN");
+                    http.requestMatchers("/producto/eliminar").hasRole("ADMIN");
+                    http.requestMatchers("/producto/movimiento-producto").hasRole("ADMIN");
+                    http.requestMatchers("/venta/editar").hasRole("ADMIN");
+                    http.requestMatchers("/venta/eliminar").hasRole("ADMIN");
+                    http.requestMatchers("/proveedor/**").hasRole("ADMIN");
+
                 http.anyRequest().authenticated();
             })
             .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class)

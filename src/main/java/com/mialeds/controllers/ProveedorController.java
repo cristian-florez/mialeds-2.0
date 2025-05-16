@@ -80,7 +80,7 @@ public class ProveedorController {
         }
     }
 
-    @PutMapping("/asignarPrecio")
+    @PutMapping("/asignar-precio")
     public ResponseEntity<Map<String, String>> asignarPrecio(@RequestBody Map<String, String> data) {
         try {
             int idProveedor = Integer.parseInt(data.get("id_proveedor_precio"));

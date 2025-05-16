@@ -17,7 +17,7 @@ public class KardexController {
     @Autowired
     private KardexService kardexSerive;
 
-    @GetMapping("/kardex-movimiento")
+    @GetMapping("/movimiento")
     public ResponseEntity<List<Kardex>> listarMovimientos(@RequestParam("movimiento") String movimiento) {
         List<Kardex> resultado = kardexSerive.listarPorMovimiento(movimiento);
 

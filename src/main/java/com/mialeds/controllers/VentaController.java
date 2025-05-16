@@ -65,28 +65,28 @@ public class VentaController {
         return ResponseEntity.ok(Map.of("mensaje", "Venta editada con éxito."));
     }
 
-    @DeleteMapping("/eliminar/{id_eliminar_venta}")
+    @DeleteMapping("/eliminar/{id}")
     public ResponseEntity<Map<String, String>> eliminarVenta(@PathVariable("id_eliminar_venta") int id) {
         ventaService.eliminar(id);
         return ResponseEntity.ok(Map.of("mensaje", "Venta eliminada con éxito."));
     }
 
-    @GetMapping("/ProductosMasVendidos")
+    @GetMapping("/Productos-mas-vendidos")
     public ResponseEntity<List<Venta>> top5ProductosMasVendidos() {
         return ResponseEntity.ok(ventaService.obtenerTop5ProductosMasVendidos());
     }
 
-    @GetMapping("/ProductosMenosVendidos")
+    @GetMapping("/Productos.menos-vendidos")
     public ResponseEntity<List<Venta>> top5ProductosMenosVendidos() {
         return ResponseEntity.ok(ventaService.obtenerTop5ProductosMenosVendidos());
     }
 
-    @GetMapping("/VentasUltimos30Dias")
+    @GetMapping("/Ventas-ultimos-30-dias")
     public ResponseEntity<List<Venta>> ventasPorDiaUltimos30Dias() {
         return ResponseEntity.ok(ventaService.obtenerVentasUltimoMes());
     }
 
-    @GetMapping("/GananciasUltimos30Dias")
+    @GetMapping("/Ganancias-ultimos-30-dias")
     public ResponseEntity<List<Venta>> gananciasPorDiaUltimos30Dias() {
         return ResponseEntity.ok(ventaService.obtenerGananciasUltimoMes());
     }
