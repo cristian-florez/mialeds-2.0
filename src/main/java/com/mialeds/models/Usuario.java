@@ -2,6 +2,8 @@ package com.mialeds.models;
 
 import java.util.List;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import jakarta.persistence.*;
 import lombok.*;
 //tener en cuenta que el kardex le puede generar conflictos asi que tener el cuenta JsonIgnoreProperties
@@ -26,6 +28,7 @@ public class Usuario {
     private String cedula;
 
     @Column(name = "contrasena", nullable = false, length = 255)
+    @JsonIgnore
     private String contrasena;
 
     @Column(name = "correo_electronico", nullable = false, length = 100)
@@ -47,6 +50,7 @@ public class Usuario {
     private boolean credentialNoExpired;
 
     @OneToMany(mappedBy = "usuario")
+    @JsonIgnore
     private List<Kardex> kardexes;
 
     @ManyToOne

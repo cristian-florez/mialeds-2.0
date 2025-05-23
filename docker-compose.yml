@@ -12,19 +12,19 @@ services:
     networks:
       - mialeds-net
 
-  app:
-    build: .
-    container_name: mialeds-app_2.0
-    ports:
-      - "8080:8080"
-    depends_on:
-      - mysql
-    environment:
-      SPRING_DATASOURCE_URL: jdbc:mysql://mysql:3306/mialeds?useSSL=false&serverTimezone=UTC&allowPublicKeyRetrieval=true
-      SPRING_DATASOURCE_USERNAME: root
-      SPRING_DATASOURCE_PASSWORD: nacional2000
-    networks:
-      - mialeds-net
+  # app:
+  #   build: .
+  #   container_name: mialeds-app_2.0
+  #   ports:
+  #     - "8080:8080"
+  #   depends_on:
+  #     - mysql
+  #   environment:
+  #     SPRING_DATASOURCE_URL: jdbc:mysql://mysql:3306/mialeds?useSSL=false&serverTimezone=UTC&allowPublicKeyRetrieval=true
+  #     SPRING_DATASOURCE_USERNAME: root
+  #     SPRING_DATASOURCE_PASSWORD: nacional2000
+  #   networks:
+  #     - mialeds-net
 
   phpmyadmin:
     image: phpmyadmin/phpmyadmin
