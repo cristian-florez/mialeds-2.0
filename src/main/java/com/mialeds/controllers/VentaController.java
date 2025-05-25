@@ -11,7 +11,11 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import com.mialeds.models.Venta;
+import com.mialeds.models.dtos.VentaController.VentaDTO;
+import com.mialeds.models.dtos.VentaController.VentaEditarDTO;
 import com.mialeds.services.VentaService;
+
+import jakarta.validation.Valid;
 
 @RestController
 @RequestMapping("/venta")
@@ -43,24 +47,24 @@ public class VentaController {
     }
 
     @PostMapping("/nuevo")
-    public ResponseEntity<Map<String, String>> crearVenta(@RequestBody Map<String, String> data) {
+    public ResponseEntity<Map<String, String>> crearVenta(@Valid @RequestBody VentaDTO ventaDTO) {
         ventaService.guardar(
-            Integer.parseInt(data.get("id_producto_venta")),
-            Integer.parseInt(data.get("cantidad_entrada_venta")),
-            LocalDate.parse(data.get("fecha_venta"))
+            ventaDTO.getIdProducto(),
+            ventaDTO.getCantidad(),
+            ventaDTO.getFecha()
         );
         return ResponseEntity.status(HttpStatus.CREATED)
             .body(Map.of("mensaje", "Venta realizada con éxito."));
     }
 
     @PutMapping("/editar/{id}")
-    public ResponseEntity<Map<String, String>> editarVenta(@PathVariable int id, @RequestBody Map<String, Object> data) {
+    public ResponseEntity<Map<String, String>> editarVenta(@PathVariable int id,@Valid @RequestBody VentaEditarDTO ventaEditarDTO) {
         ventaService.actualizar(
             id,
-            Integer.parseInt(data.get("id_producto_venta").toString()),
-            Integer.parseInt(data.get("cantidad_editar_venta").toString()),
-            Integer.parseInt(data.get("cantidad_editar_total_venta").toString()),
-            LocalDate.parse(data.get("fecha_editar_venta").toString())
+            ventaEditarDTO.getIdProducto(),
+            ventaEditarDTO.getCantidad(),
+            ventaEditarDTO.getTotal(),
+            ventaEditarDTO.getFecha()
         );
         return ResponseEntity.ok(Map.of("mensaje", "Venta editada con éxito."));
     }

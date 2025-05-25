@@ -6,8 +6,12 @@ import org.springframework.web.bind.annotation.*;
 
 import com.mialeds.models.Proveedor;
 import com.mialeds.models.ProveedorProducto;
+import com.mialeds.models.dtos.ProveedorController.AsignarPrecioDTO;
+import com.mialeds.models.dtos.ProveedorController.ProveedorDTO;
 import com.mialeds.services.ProveedorProductoService;
 import com.mialeds.services.ProveedorService;
+
+import jakarta.validation.Valid;
 
 import java.util.List;
 import java.util.Map;
@@ -42,27 +46,27 @@ public class ProveedorController {
 
     @PutMapping("/editar/{id}")
     public ResponseEntity<Map<String, String>> editarProveedor(
-            @PathVariable("id") int id,
-            @RequestBody Map<String, Object> data) {
-
+            @PathVariable("id") int id,@Valid
+            @RequestBody ProveedorDTO proveedorDTO) {
         proveedorService.actualizar(
             id,
-            data.get("editar_nombre_proveedor").toString(),
-            data.get("editar_nit_proveedor").toString(),
-            data.get("editar_correo_proveedor").toString(),
-            data.get("editar_telefono_proveedor").toString());
+            proveedorDTO.getNombre(),
+            proveedorDTO.getNit(),
+            proveedorDTO.getCorreo(),
+            proveedorDTO.getTelefono());
 
         return ResponseEntity.ok(Map.of("mensaje", "Proveedor editado correctamente"));
     }
 
     @PostMapping("/nuevo")
-    public ResponseEntity<Map<String, String>> crearProveedor(@RequestBody Map<String, String> data) {
+    public ResponseEntity<Map<String, String>> crearProveedor(@Valid @RequestBody ProveedorDTO proveedorDTO) {
         try {
             proveedorService.crear(
-                data.get("editar_nombre_proveedor"),
-                data.get("editar_nit_proveedor"),
-                data.get("editar_correo_proveedor"),
-                data.get("editar_telefono_proveedor"));
+                proveedorDTO.getNombre(),
+                proveedorDTO.getNit(),
+                proveedorDTO.getCorreo(),
+                proveedorDTO.getTelefono()
+            );
 
             return ResponseEntity.ok(Map.of("mensaje", "Proveedor creado correctamente"));
         } catch (Exception e) {
@@ -81,17 +85,14 @@ public class ProveedorController {
     }
 
     @PutMapping("/asignar-precio")
-    public ResponseEntity<Map<String, String>> asignarPrecio(@RequestBody Map<String, String> data) {
+    public ResponseEntity<Map<String, String>> asignarPrecio(@Valid @RequestBody AsignarPrecioDTO asignarPrecioDTO) {
         try {
-            int idProveedor = Integer.parseInt(data.get("id_proveedor_precio"));
-            int idProducto = Integer.parseInt(data.get("id_producto_precio"));
-            int precio = Integer.parseInt(data.get("precio_precio"));
 
-            if (idProveedor == 0 || idProducto == 0) {
-                return ResponseEntity.badRequest().body(Map.of("mensaje", "Error: producto o proveedor no encontrado"));
-            }
-
-            boolean respuesta = proveedorProductoService.asignarPrecio(idProveedor, idProducto, precio);
+            boolean respuesta = proveedorProductoService.asignarPrecio(
+                asignarPrecioDTO.getIdProveedor(),
+                asignarPrecioDTO.getIdProducto(),
+                asignarPrecioDTO.getPrecio()
+            );
 
             if (respuesta) {
                 return ResponseEntity.ok(Map.of("mensaje", "Precio asignado correctamente"));

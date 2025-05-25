@@ -10,9 +10,13 @@ import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
 import com.mialeds.models.Producto;
+import com.mialeds.models.dtos.ProductoController.ProductoDTO;
+import com.mialeds.models.dtos.ProductoController.ProductoMovimientoDTO;
 import com.mialeds.services.KardexService;
 import com.mialeds.services.ProductoService;
 import com.mialeds.services.UsuarioService;
+
+import jakarta.validation.Valid;
 
 @RestController
 @RequestMapping("/producto")
@@ -52,13 +56,13 @@ public class ProductoController {
     }
 
     @PostMapping("/nuevo")
-    public ResponseEntity<Map<String, String>> crearProducto(@RequestBody Map<String, String> data) {
+    public ResponseEntity<Map<String, String>> crearProducto(@Valid @RequestBody ProductoDTO productoDTO) {
         productoService.crear(
-            data.get("nombre"),
-            data.get("presentacion"),
-            Integer.parseInt(data.get("precioCompra")),
-            Integer.parseInt(data.get("precioVenta")),
-            Integer.parseInt(data.get("cantidad"))
+            productoDTO.getNombre(),
+            productoDTO.getPresentacion(),
+            productoDTO.getPrecioCompra(),
+            productoDTO.getPrecioVenta(),
+            productoDTO.getCantidad()
         );
         return ResponseEntity.status(HttpStatus.CREATED)
                              .body(Map.of("mensaje", "Producto creado correctamente"));
@@ -66,15 +70,15 @@ public class ProductoController {
 
     @PutMapping("/editar/{id}")
     public ResponseEntity<Map<String, String>> editarProducto(
-            @PathVariable("id") int id,
-            @RequestBody Map<String, Object> data) {
+            @PathVariable("id") int id,@Valid
+            @RequestBody ProductoDTO productoDTO) {
         productoService.actualizar(
             id,
-            data.get("nombre").toString(),
-            data.get("presentacion").toString(),
-            Integer.parseInt(data.get("precioCompra").toString()),
-            Integer.parseInt(data.get("precioVenta").toString()),
-            Integer.parseInt(data.get("cantidad").toString())
+            productoDTO.getNombre(),
+            productoDTO.getPresentacion(),
+            productoDTO.getPrecioCompra(),
+            productoDTO.getPrecioVenta(),
+            productoDTO.getCantidad()
         );
         return ResponseEntity.ok(Map.of("mensaje", "Producto actualizado correctamente"));
     }
@@ -87,11 +91,11 @@ public class ProductoController {
 
     @PostMapping("/movimiento-producto/{id}")
     public ResponseEntity<Map<String, String>> movimientoProducto(
-        @PathVariable("id") int id,
-        @RequestBody Map<String, Object> data) {
-        int cantidad = Integer.parseInt(data.get("cantidad").toString());
-        String tipoMovimiento = data.get("movimiento").toString();
-        LocalDate fecha = LocalDate.parse(data.get("fecha").toString());
+        @PathVariable("id") int id,@Valid
+        @RequestBody ProductoMovimientoDTO productoMovimientoDTO) {
+        int cantidad = productoMovimientoDTO.getCantidad();
+        String tipoMovimiento = productoMovimientoDTO.getMovimiento();
+        LocalDate fecha = productoMovimientoDTO.getFecha();
 
         productoService.movimiento(id, cantidad, tipoMovimiento);
         int idUsuario = usuarioService.obtenerIdUsuarioSesion();
